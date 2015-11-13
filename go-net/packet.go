@@ -7,9 +7,10 @@ package gonet
 import (
 	"bytes"
 	"encoding/binary"
+	"github.com/golang/protobuf/proto"
 )
 
-type PacketIdT int16
+type PacketIdT int32
 
 type Packet struct {
 	size int32
@@ -38,10 +39,26 @@ func NewPacketByObject(v interface{}, id PacketIdT) *Packet {
 	return p
 }
 
+func NewPacketByProto(msg proto.Message, id PacketIdT) *Packet {
+
+	data, _ := proto.Marshal(msg)
+
+	p := new(Packet)
+	p.buf = data
+	p.size = int32(len(data))
+	p.id = id
+
+	return p
+}
+
 func PacketToObject(packet *Packet, v interface{}) {
 	buf := bytes.NewReader(packet.buf)
 
 	binary.Read(buf, binary.BigEndian, v)
+}
+
+func PacketToProto(packet *Packet, msg proto.Message) {
+	proto.Unmarshal(packet.buf, msg)
 }
 
 func (p *Packet) GetBuffer() []byte {

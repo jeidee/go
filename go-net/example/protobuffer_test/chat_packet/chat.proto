@@ -1,0 +1,53 @@
+package chat_packet;
+
+enum PacketType {
+    CHAT_PACKET_VERSION = 100;
+    USER_INFO = 101;
+    ROOM_INFO = 102;
+    REQ_LOGIN = 1001;
+    RES_LOGIN = 1002;
+    REQ_USER_LIST = 1003;
+    RES_USER_LIST = 1004;
+    REQ_SEND_CHAT = 1005;
+    NOTIFY_CHAT = 1006;
+}
+
+enum Result {
+    OK = 0;
+    FAIL = 1;
+}
+
+message UserInfo {
+    required int32 id = 1;
+    required string nickname = 2;
+}
+
+message ReqLogin {
+    required string nickname = 1;
+}
+
+message ResLogin {
+    required int32 sender_id = 1;
+    optional Result result = 2;
+}
+
+message ReqUserList {
+    required int32 sender_id = 1;
+}
+
+message ResUserList {
+    required int32 page = 1;
+    required int32 page_size = 2;
+    required int32 number_of_users = 3;
+    repeated UserInfo user_info = 4;
+}
+
+message ReqSendChat {
+    required int32 sender_id = 1;
+    required string chat = 2;
+}
+
+message NotifyChat {
+    required int32 sender_id = 1;
+    required string chat = 2;
+}
